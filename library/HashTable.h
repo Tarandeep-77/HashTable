@@ -1,60 +1,46 @@
-#include <iostream>
+#include<iostream>
+#include "./Node.h"
 using namespace std;
+
 int SIZE=10;
-
-template<typename K,typename V>
-class Node{
-    public:
-    K key;
-    V value;
-    Node<K,V>* next;
-
-    Node(K k,V v){
-        key = k;
-        value = v;
-        next = nullptr;
-    }
-};
-
 template<typename K,typename V>
 class HashTable{
     private:
     Node<K,V>** table;
+    int hashFunction(K key);
 
-   int hashFunction(int key) {
-    return key % SIZE;
-    }
+public:
+    HashTable();
+    ~HashTable();
+    void insert(K key, V value);
+    V get(K key);
+    void deltKey(K key);
+    void search(K key);
+    void display();
 
-    int hashFunction(float key) {
-    return ((int)key) % SIZE;
-    }
+};
 
-    int hashFunction(char key) {
-    return key % SIZE;
-    }
+template<typename K, typename V>
+HashTable<K, V>::HashTable() {
+    table = new Node<K, V>*[SIZE];
+    for (int i = 0; i < SIZE; i++)
+        table[i] = nullptr;
+}
 
-    public:
-    HashTable(){
-        table = new Node<K,V>*[SIZE];
-        for(int i=0; i<SIZE; i++){
-            table[i] = nullptr;
-        }
-    }
-
-    ~HashTable(){
-    for(int i = 0; i < SIZE; i++){
-        Node<K,V>* current = table[i];
-        while(current != nullptr){
-            Node<K,V>* temp = current;
+template<typename K, typename V>
+HashTable<K, V>::~HashTable() {
+    for (int i = 0; i < SIZE; i++) {
+        Node<K, V>* current = table[i];
+        while (current != nullptr) {
+            Node<K, V>* temp = current;
             current = current->next;
             delete temp;
         }
     }
     delete[] table;
 }
-
-
-    void insert(K key,V value){
+template<typename K,typename V>
+    void HashTable<K, V>::insert(K key,V value){
         int index = hashFunction(key);
         Node<K,V>* head = table[index];
 
@@ -71,7 +57,8 @@ class HashTable{
          table[index] = newNode;
     }
 
-      V get(K key){
+    template<typename K, typename V>
+      V HashTable<K, V>::get(K key){
         int index = hashFunction(key);
         Node<K,V>* current = table[index];
          while(current!=nullptr){
@@ -82,8 +69,8 @@ class HashTable{
          }
           return V();
     }
-
-     void deltKey(K key){
+template<typename K, typename V>
+     void HashTable<K, V>::deltKey(K key){
         int index = hashFunction(key);
         Node<K,V>* current = table[index]; 
         Node<K,V>* prev = nullptr;
@@ -106,8 +93,8 @@ class HashTable{
         cout<<"key not found";
     }
 
-    
-    void search(K key){
+    template<typename K, typename V>
+    void HashTable<K, V>::search(K key){
         int index = hashFunction(key);
         Node<K,V>* current = table[index];
          while(current!=nullptr){
@@ -120,7 +107,8 @@ class HashTable{
           cout<<"Key not found"<<endl;
     }
 
-    void display(){
+    template<typename K, typename V>
+    void HashTable<K, V>::display(){
         for(int i=0; i<SIZE; i++){
             cout<<"Index "<<i<<":";
             Node<K,V>* current = table[i];
@@ -132,30 +120,7 @@ class HashTable{
             cout<<"NULL"<<endl;
         }
     }
-
-};
-
-int main(){
-
-    // HashTable<int,float> ht;
-    // ht.insert(1,2.34);
-    // ht.insert(12,25.2);
-    // ht.insert(3,5.2);
-    // ht.display();
-
-    
-    HashTable<char,float> ht;
-    ht.insert('A',2.34);
-    ht.insert('B',25.2);
-    ht.insert('C',5.2);
-    ht.display();
-    cout<<"Get function:"<< ht.get(3);
-
-    ht.deltKey(12);
-    cout<<"after deletion:"<<endl;
-    ht.display();
-
-    cout<<"Searching 12"<<endl;
-    ht.search(12);
-    return 0;
+template<typename K, typename V>
+int HashTable<K, V>::hashFunction(K key) {
+    return <int>(key) % SIZE;
 }
